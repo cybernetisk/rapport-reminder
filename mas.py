@@ -18,6 +18,7 @@ def send_email(to, subject, message):
     msg['To'] = to
     msg.attach(MIMEText(message, 'html', 'utf-8'))
     s = smtplib.SMTP('localhost')
+    print('Sending mail to: %s', to)
     s.sendmail('arkiv@cyb.no', to, msg.as_string())
     s.close()
 
@@ -47,10 +48,10 @@ def map_issues_to_email(issues):
 jira = JIRA(JIRA_URL, basic_auth=(JIRA_USER, JIRA_PW))
 
 # Get up to 500 issues in prosject RAP that is not done.
+print('Getting issues from JIRA')
 issues = jira.search_issues('project=RAP AND status!=DONE', maxResults=500)
-
+print('Fetched %d issues from JIRA' % len(issues))
 users = map_issues_to_email(issues)
-
 # get the mail from file
 fil = codecs.open('mailmal.md', 'r', encoding='utf-8')
 mal = fil.read()
